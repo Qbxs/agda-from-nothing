@@ -32,13 +32,14 @@ false and _ = false
 true and y = y
 
 _or_ : Boolean → Boolean → Boolean
-x or y = {!!}
+false or y = y
+true or _ = true
 
 _nand_ : Boolean → Boolean → Boolean
-x nand y = {!!}
+x nand y = not (x and y)
 
 _nor_ : Boolean → Boolean → Boolean
-x nor y = {!!}
+x nor y = not (x or y)
 
 _iff_ : Boolean → Boolean → Boolean
 false iff false = true
@@ -47,7 +48,7 @@ true iff false = false
 true iff true = true
 
 _xor_ : Boolean → Boolean → Boolean
-x xor y = {!!}
+x xor y = not (x iff y)
 
 if_then_else_ : {X : Set} → Boolean → X → X → X
 if false then _ else y = y
@@ -68,7 +69,7 @@ true-and-true-eq-true : true and true ≡ true
 true-and-true-eq-true = equal
 
 false-or-false-eq-false : false or false ≡ false
-false-or-false-eq-false = {!!}
+false-or-false-eq-false = equal
 
 if-true-then-false-eq-false : if true then false else true ≡ false
 if-true-then-false-eq-false = equal
@@ -79,7 +80,7 @@ false-and-x-eq-false : (x : Boolean) → false and x ≡ false
 false-and-x-eq-false _ = equal
 
 true-or-x-eq-true : (x : Boolean) → true or x ≡ true
-true-or-x-eq-true x = {!!}
+true-or-x-eq-true x = equal
 
 -- Properties requiring proof
 
@@ -92,16 +93,17 @@ x-and-false-eq-false false = equal -- Goal: false and false ≡ false
 x-and-false-eq-false true = equal -- Goal: true and false ≡ false
 
 true-eq-true-or-x : (x : Boolean) → x or true ≡ true
-true-eq-true-or-x x = {!!}
+true-eq-true-or-x false = equal
+true-eq-true-or-x true = equal
 
 nand-eq-not-and : (x y : Boolean) → x nand y ≡ not (x and y)
-nand-eq-not-and x y = {!!}
+nand-eq-not-and x y = equal
 
 nor-eq-not-or : (x y : Boolean) → x nor y ≡ not (x or y)
-nor-eq-not-or x y = {!!}
+nor-eq-not-or x y = equal
 
 xor-eq-not-iff : (x y : Boolean) → x xor y ≡ not (x iff y)
-xor-eq-not-iff x y = {!!}
+xor-eq-not-iff x y = equal
 
 -- Properties using other proofs
 
@@ -110,7 +112,8 @@ iff-same-true false .false equal = equal
 iff-same-true true .true equal = equal
 
 xor-same-false : (x y : Boolean) → x ≡ y → x xor y ≡ false
-xor-same-false x y p = {!!}
+xor-same-false false .false equal = equal
+xor-same-false true .true equal = equal
 
 -- Simple properties involving negation
 
@@ -118,20 +121,22 @@ true-and-true-not-false : true and true ≡ false → Empty
 true-and-true-not-false ()
 
 false-or-false-not-true : false or false ≡ true → Empty
-false-or-false-not-true p = {!!}
+false-or-false-not-true ()
 
 false-and-x-not-true : (x : Boolean) → false and x ≡ true → Empty
 false-and-x-not-true x ()
 
 true-or-x-not-false : (x : Boolean) → true or x ≡ false → Empty
-true-or-x-not-false x p = {!!}
+true-or-x-not-false false ()
+true-or-x-not-false true ()
 
 x-and-false-not-true : (x : Boolean) → x and false ≡ true → Empty
 x-and-false-not-true false ()
 x-and-false-not-true true ()
 
 x-or-true-not-false : (x : Boolean) → x or true ≡ false → Empty
-x-or-true-not-false x p = {!!}
+x-or-true-not-false false ()
+x-or-true-not-false true ()
 
 -- Properties using other negations
 
@@ -145,4 +150,7 @@ iff-different-false true false p = equal
 iff-different-false true true p = empty-to-anything (p equal)
 
 xor-different-true : (x y : Boolean) → (x ≡ y → Empty) → x xor y ≡ true
-xor-different-true x y p = {!!}
+xor-different-true false false p = empty-to-anything (p equal)
+xor-different-true false true p = equal
+xor-different-true true false p = equal
+xor-different-true true true p = empty-to-anything (p equal)
