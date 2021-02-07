@@ -53,13 +53,15 @@ apply (f ∷ fs) [] = []
 apply (f ∷ fs) (x ∷ xs) = f x ∷ apply fs xs
 
 append : {a : Level} → {A : Set a} → List A → List A → List A
-append xs ys = {!!}
+append [] ys = ys
+append (x ∷ xs) ys = x ∷ (append xs ys)
 
 append-length : {a : Level} → {A : Set a}
   → (xs : List A)
   → (ys : List A)
   → length (append xs ys) ≡ length xs + length ys
-append-length xs ys = {!!}
+append-length [] ys = refl
+append-length (x ∷ xs) ys rewrite append-length xs ys = refl
 
 data Vec {a : Level} (A : Set a) : Nat → Set a where
   [] : Vec A zero
@@ -90,4 +92,5 @@ vappend : {a : Level} → {A : Set a} → {n m : Nat}
   → Vec A n
   → Vec A m
   → Vec A (n + m)
-vappend xs ys = {!!}
+vappend [] ys = ys
+vappend (x ∷ xs) ys = x ∷ (vappend xs ys)
