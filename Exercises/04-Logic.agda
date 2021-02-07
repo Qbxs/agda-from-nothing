@@ -1,127 +1,133 @@
 module 04-Logic where
 
-infixl 6 _or_
-infixl 7 _and_
+infixl 6 _∨_
+infixl 7 _∧_
 
 -- A → (B → A)
 modus-ponens : {A B : Set} → (A → B) → A → B
 modus-ponens f a = f a
 
-data _and_ (A B : Set) : Set where
-  both : (a : A) → (b : B) → A and B
+data _∧_ (A B : Set) : Set where
+  both : (a : A) → (b : B) → A ∧ B
 
-data _or_ (A B : Set) : Set where
-  first : (a : A) → A or B
-  second : (b : B) → A or B
+data _∨_ (A B : Set) : Set where
+  first : (a : A) → A ∨ B
+  second : (b : B) → A ∨ B
 
--- A and B → A
-proj1 : {A B : Set} → A and B → A
+-- A ∧ B → A
+proj1 : {A B : Set} → A ∧ B → A
 proj1 (both a b) = a
 
--- A and B → B
-proj2 : {A B : Set} → A and B → B
-proj2 x = {!!}
+-- A ∧ B → B
+proj2 : {A B : Set} → A ∧ B → B
+proj2 (both a b) = b
 
--- A → A or B
-inj1 : {A B : Set} → A → A or B
+-- A → A ∨ B
+inj1 : {A B : Set} → A → A ∨ B
 inj1 = first
 
--- B → A or B
-inj2 : {A B : Set} → B → A or B
-inj2 x = {!!}
+-- B → A ∨ B
+inj2 : {A B : Set} → B → A ∨ B
+inj2 = second
 
-or-over-and
+∨-over-∧
   : {A B C : Set}
-  → (A and B) or C
-  → (A or C) and (B or C)
-or-over-and (first (both a b)) = both (first a) (first b)
-or-over-and (second x) = both (second x) (second x)
+  → (A ∧ B) ∨ C
+  → (A ∨ C) ∧ (B ∨ C)
+∨-over-∧ (first (both a b)) = both (first a) (first b)
+∨-over-∧ (second x) = both (second x) (second x)
 
-and-over-or
+∧-over-∨
   : {A B C : Set}
-  → (A or B) and C
-  → (A and C) or (B and C)
-and-over-or x = {!!}
+  → (A ∨ B) ∧ C
+  → (A ∧ C) ∨ (B ∧ C)
+∧-over-∨ (both (first a) c) = first (both a c)
+∧-over-∨ (both (second b) c) = second (both b c)
 
 data Empty : Set where
 
-not : (A : Set) → Set
-not A = A → Empty
+¬ : (A : Set) → Set
+¬ A = A → Empty
 
 empty-to-anything : {A : Set} → Empty → A
 empty-to-anything ()
 
--- (A and B) → not (not A or not B)
-not-not-and : {A B : Set} → (A and B) → not (not A or not B)
-not-not-and (both a b) (first ae) = ae a
-not-not-and (both a b) (second be) = be b
+-- (A ∧ B) → ¬ (¬ A ∨ ¬ B)
+¬-¬-∧ : {A B : Set} → (A ∧ B) → ¬ (¬ A ∨ ¬ B)
+¬-¬-∧ (both a b) (first ae) = ae a
+¬-¬-∧ (both a b) (second be) = be b
 
--- (A or B) → not (not A and not B)
-not-not-or : {A B : Set} → (A or B) → not (not A and not B)
-not-not-or x = {!!}
+-- (A ∨ B) → ¬ (¬ A ∧ ¬ B)
+¬-¬-∨ : {A B : Set} → (A ∨ B) → ¬ (¬ A ∧ ¬ B)
+¬-¬-∨ (first a) (both a₁ b) = a₁ a
+¬-¬-∨ (second b) (both a b₁) = b₁ b
 
--- (not A or not B) → not (A and B)
-not-from-or : {A B : Set} → (not A or not B) → not (A and B)
-not-from-or x = {!!}
+-- (¬ A ∨ ¬ B) → ¬ (A ∧ B)
+¬-from-∨ : {A B : Set} → (¬ A ∨ ¬ B) → ¬ (A ∧ B)
+¬-from-∨ (first a) (both a₁ b) = a a₁
+¬-from-∨ (second b) (both a b₁) = b b₁
 
--- (not A and not B) → not (A or B)
-not-from-and : {A B : Set} → (not A and not B) → not (A or B)
-not-from-and x = {!!}
+-- (¬ A ∧ ¬ B) → ¬ (A ∨ B)
+¬-from-∧ : {A B : Set} → (¬ A ∧ ¬ B) → ¬ (A ∨ B)
+¬-from-∧ (both a b) (first a₁) = a a₁
+¬-from-∧ (both a b) (second b₁) = b b₁
 
--- (A and B) → not (A → not B)
-and-not-arrow : {A B : Set} → (A and B) → not (A → not B)
-and-not-arrow x = {!!}
+-- (A ∧ B) → ¬ (A → ¬ B)
+∧-¬-arrow : {A B : Set} → (A ∧ B) → ¬ (A → ¬ B)
+∧-¬-arrow (both a b) f = f a b
 
--- (A → B) → not (A and not B)
-arrow-not-and-not : {A B : Set} → (A → B) → not (A and not B)
-arrow-not-and-not f (both a be) = be (f a)
+-- (A → B) → ¬ (A ∧ ¬ B)
+arrow-¬-∧-¬ : {A B : Set} → (A → B) → ¬ (A ∧ ¬ B)
+arrow-¬-∧-¬ f (both a be) = be (f a)
 
--- (A and not B) → not (A → B)
-and-not-not-arrow : {A B : Set} → (A and not B) → not (A → B)
-and-not-not-arrow x = {!!}
+-- (A ∧ ¬ B) → ¬ (A → B)
+∧-¬-¬-arrow : {A B : Set} → (A ∧ ¬ B) → ¬ (A → B)
+∧-¬-¬-arrow (both a ¬b) f = ¬b (f a)
 
--- (A → not B) → not (A and B)
-arrow-not-and : {A B : Set} → (A → not B) → not (A and B)
-arrow-not-and f = {!!}
+-- (A → ¬ B) → ¬ (A ∧ B)
+arrow-¬-∧ : {A B : Set} → (A → ¬ B) → ¬ (A ∧ B)
+arrow-¬-∧ f ¬a∧b = f (proj1 ¬a∧b) (proj2 ¬a∧b)
 
--- not (A and B) → (A → not B)
-not-and-arrow-not : {A B : Set} → not (A and B) → (A → not B)
-not-and-arrow-not f = {!!}
+-- ¬ (A ∧ B) → (A → ¬ B)
+¬-∧-arrow-¬ : {A B : Set} → ¬ (A ∧ B) → (A → ¬ B)
+¬-∧-arrow-¬ ¬a∧b a ¬b = ¬a∧b (both a ¬b)
 
 -- (A → B) → ((A → (B → C)) → (A → C))
 arrow-trans : {A B C : Set} → (A → B) → ((A → (B → C)) → (A → C))
-arrow-trans f g = {!!}
+arrow-trans f g a = g a (f a)
 
--- A → (B → A and B)
-arrow-and : {A B : Set} → A → (B → A and B)
-arrow-and a b = {!!}
+-- A → (B → A ∧ B)
+arrow-∧ : {A B : Set} → A → (B → A ∧ B)
+arrow-∧ a b = both a b
 
--- (A → C) → ((B → C) → (A or B → C))
-arrow-or : {A B C : Set} → (A → C) → ((B → C) → (A or B → C))
-arrow-or f g = {!!}
+-- (A → C) → ((B → C) → (A ∨ B → C))
+arrow-∨ : {A B C : Set} → (A → C) → ((B → C) → (A ∨ B → C))
+arrow-∨ f g (first a) = f a
+arrow-∨ f g (second b) = g b
 
--- (A → B) → ((A → not B) → not A)
-arrow-nots : {A B : Set} → (A → B) → ((A → not B) → not A)
-arrow-nots f g = {!!}
+-- (A → B) → ((A → ¬ B) → ¬ A)
+arrow-¬s : {A B : Set} → (A → B) → ((A → ¬ B) → ¬ A)
+arrow-¬s f g a = g a (f a)
 
--- not A → (A → B)
-not-arrow : {A B : Set} → not A → (A → B)
-not-arrow f a = empty-to-anything (f a)
+-- ¬ A → (A → B)
+¬-arrow : {A B : Set} → ¬ A → (A → B)
+¬-arrow f a = empty-to-anything (f a)
 
--- (A or B) → (not A → B)
-or-not-arrow : {A B : Set} → (A or B) → (not A → B)
-or-not-arrow (first a) ae = empty-to-anything (ae a)
-or-not-arrow (second b) ae = b
+-- (A ∨ B) → (¬ A → B)
+∨-¬-arrow : {A B : Set} → (A ∨ B) → (¬ A → B)
+∨-¬-arrow (first a) ae = empty-to-anything (ae a)
+∨-¬-arrow (second b) ae = b
 
--- (not A or B) → (A → B)
-not-or-arrow : {A B : Set} → (not A or B) → (A → B)
-not-or-arrow x = {!!}
+-- (¬ A ∨ B) → (A → B)
+¬-∨-arrow : {A B : Set} → (¬ A ∨ B) → (A → B)
+¬-∨-arrow (first ¬a) a = empty-to-anything (¬a a)
+¬-∨-arrow (second b) a = b
 
 
 module ApplyExample where
   data X : Set where
-    -- constructors...
-  data A : X → Set where -- note that (A : X → Set)
+    -- construct∨s...
+  data A : X → Set where -- ¬e that (A : X → Set)
     given : (x : X) → A x
 
 -- ∀xA(x) → A(t)
@@ -137,23 +143,23 @@ pair-example : {X : Set} → {A : X → Set} → (t : X) → (A t) → Pair X A
 pair-example t v = pair t v
 
 
--- not (A or B) → (not A and not B)
-not-over-or : {A B : Set} → not (A or B) → (not A and not B)
-not-over-or {A} {B} f = both notA notB
+-- ¬ (A ∨ B) → (¬ A ∧ ¬ B)
+¬-over-∨ : {A B : Set} → ¬ (A ∨ B) → (¬ A ∧ ¬ B)
+¬-over-∨ {A} {B} f = both ¬A ¬B
   where
-  notA : A → Empty
-  notA x = f (first x)
+  ¬A : A → Empty
+  ¬A x = f (first x)
 
-  notB : B → Empty
-  notB x = f (second x)
+  ¬B : B → Empty
+  ¬B x = f (second x)
 
--- not (not (A or not A))
-not-not-exclusive-middle : {A : Set} → not (not (A or not A))
-not-not-exclusive-middle {A} f = f A-or-not-A 
+-- ¬ (¬ (A ∨ ¬ A))
+¬-¬-exclusive-middle : {A : Set} → ¬ (¬ (A ∨ ¬ A))
+¬-¬-exclusive-middle {A} f = f A-∨-¬-A
   where
--- f  : A or (A → Empty) → Empty
-  not-A : not A -- A → Empty
-  not-A x = f (first x)
+-- f  : A ∨ (A → Empty) → Empty
+  ¬-A : ¬ A -- A → Empty
+  ¬-A x = f (first x)
 
-  A-or-not-A : A or not A -- A or (A → Empty)
-  A-or-not-A = second not-A
+  A-∨-¬-A : A ∨ ¬ A -- A ∨ (A → Empty)
+  A-∨-¬-A = second ¬-A
