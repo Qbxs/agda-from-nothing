@@ -59,18 +59,18 @@ empty-to-anything ()
 
 -- (A ∨ B) → ¬ (¬ A ∧ ¬ B)
 ¬-¬-∨ : {A B : Set} → (A ∨ B) → ¬ (¬ A ∧ ¬ B)
-¬-¬-∨ (first a) (both a₁ b) = a₁ a
-¬-¬-∨ (second b) (both a b₁) = b₁ b
+¬-¬-∨ (first a) (both ¬a b) = ¬a a
+¬-¬-∨ (second b) (both a ¬b) = ¬b b
 
 -- (¬ A ∨ ¬ B) → ¬ (A ∧ B)
 ¬-from-∨ : {A B : Set} → (¬ A ∨ ¬ B) → ¬ (A ∧ B)
-¬-from-∨ (first a) (both a₁ b) = a a₁
-¬-from-∨ (second b) (both a b₁) = b b₁
+¬-from-∨ (first ¬a) (both a b) = ¬a a
+¬-from-∨ (second ¬b) (both a b) = ¬b b
 
 -- (¬ A ∧ ¬ B) → ¬ (A ∨ B)
 ¬-from-∧ : {A B : Set} → (¬ A ∧ ¬ B) → ¬ (A ∨ B)
-¬-from-∧ (both a b) (first a₁) = a a₁
-¬-from-∧ (both a b) (second b₁) = b b₁
+¬-from-∧ (both ¬a ¬b) (first a) = ¬a a
+¬-from-∧ (both ¬a ¬b) (second b) = ¬b b
 
 -- (A ∧ B) → ¬ (A → ¬ B)
 ∧-¬-arrow : {A B : Set} → (A ∧ B) → ¬ (A → ¬ B)
@@ -78,7 +78,7 @@ empty-to-anything ()
 
 -- (A → B) → ¬ (A ∧ ¬ B)
 arrow-¬-∧-¬ : {A B : Set} → (A → B) → ¬ (A ∧ ¬ B)
-arrow-¬-∧-¬ f (both a be) = be (f a)
+arrow-¬-∧-¬ f (both a ¬b) = ¬b (f a)
 
 -- (A ∧ ¬ B) → ¬ (A → B)
 ∧-¬-¬-arrow : {A B : Set} → (A ∧ ¬ B) → ¬ (A → B)
@@ -90,7 +90,7 @@ arrow-¬-∧ f ¬a∧b = f (proj1 ¬a∧b) (proj2 ¬a∧b)
 
 -- ¬ (A ∧ B) → (A → ¬ B)
 ¬-∧-arrow-¬ : {A B : Set} → ¬ (A ∧ B) → (A → ¬ B)
-¬-∧-arrow-¬ ¬a∧b a ¬b = ¬a∧b (both a ¬b)
+¬-∧-arrow-¬ ¬a∧b a b = ¬a∧b (both a b)
 
 -- (A → B) → ((A → (B → C)) → (A → C))
 arrow-trans : {A B C : Set} → (A → B) → ((A → (B → C)) → (A → C))
@@ -111,12 +111,12 @@ arrow-¬s f g a = g a (f a)
 
 -- ¬ A → (A → B)
 ¬-arrow : {A B : Set} → ¬ A → (A → B)
-¬-arrow f a = empty-to-anything (f a)
+¬-arrow ¬a a = empty-to-anything (¬a a)
 
 -- (A ∨ B) → (¬ A → B)
 ∨-¬-arrow : {A B : Set} → (A ∨ B) → (¬ A → B)
-∨-¬-arrow (first a) ae = empty-to-anything (ae a)
-∨-¬-arrow (second b) ae = b
+∨-¬-arrow (first a) ¬a = empty-to-anything (¬a a)
+∨-¬-arrow (second b) ¬a = b
 
 -- (¬ A ∨ B) → (A → B)
 ¬-∨-arrow : {A B : Set} → (¬ A ∨ B) → (A → B)
