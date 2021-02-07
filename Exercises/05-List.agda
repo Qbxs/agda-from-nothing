@@ -54,7 +54,7 @@ apply (f ∷ fs) (x ∷ xs) = f x ∷ apply fs xs
 
 append : {a : Level} → {A : Set a} → List A → List A → List A
 append [] ys = ys
-append (x ∷ xs) ys = x ∷ (append xs ys)
+append (x ∷ xs) ys = x ∷ append xs ys
 
 append-length : {a : Level} → {A : Set a}
   → (xs : List A)
@@ -93,4 +93,4 @@ vappend : {a : Level} → {A : Set a} → {n m : Nat}
   → Vec A m
   → Vec A (n + m)
 vappend [] ys = ys
-vappend (x ∷ xs) ys = x ∷ (vappend xs ys)
+vappend (x ∷ xs) ys = x ∷ vappend xs ys
