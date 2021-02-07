@@ -22,7 +22,7 @@ transitivity
   → x ≡ y
   → y ≡ z
   → x ≡ z
-transitivity x y z left right = {!!}
+transitivity x .x .x equal equal = equal
 
 congruence
   : {a b : Level}
@@ -31,7 +31,7 @@ congruence
   → (x y : A)
   → x ≡ y
   → f x ≡ f y
-congruence f x y p = {!!}
+congruence f x .x equal = equal
 
 transport
   : {a b : Level}
@@ -41,4 +41,4 @@ transport
   → x ≡ y
   → P x
   → P y
-transport x y P p px = {!!}
+transport x .x P equal px = px
