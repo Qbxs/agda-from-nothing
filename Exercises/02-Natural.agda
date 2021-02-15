@@ -204,6 +204,6 @@ transitivity-bool (suc x) zero z () right
 transitivity-bool (suc x) (suc y) zero left ()
 transitivity-bool (suc x) (suc y) (suc z) left right rewrite transitivity-bool x y z left right = equal
 
-subtract : (x y : Natural) → y ≤ x → Natural
-subtract x .0 (zero≤ .x) = x
-subtract .(suc x) .(suc y) (suc≤suc y x p) = subtract x y p
+_-_valid_ : (x y : Natural) → y ≤ x → Natural
+x - .0 valid (zero≤ .x) = x
+.(suc x) - .(suc y) valid (suc≤suc y x p) = x - y valid p
